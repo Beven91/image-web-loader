@@ -45,7 +45,6 @@ Resolution.prototype.resolutionBy = function (resolution, alias) {
   var abspath = name + resolution + ext
   if (fs.existsSync(abspath)) {
     var image = fromImageFile(abspath)
-    console.log(image);
     return this.data[(resolution || alias)] = {
       width: image.width,
       height: image.height,

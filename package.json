@@ -1,6 +1,6 @@
 {
   "name": "image-web-loader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "react-native mode image loader for webpack",
   "main": "index.js",
   "scripts": {
