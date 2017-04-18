@@ -1,0 +1,32 @@
+{
+  "name": "image-web-loader",
+  "version": "1.0.1",
+  "description": "react-native mode image loader for webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.lsfash.cn:f2e/adaw.git"
+  },
+  "keywords": [
+    "webpack-loader",
+    "webpack",
+    "react-native-on-web",
+    "react-native-web"
+  ],
+  "author": "beven",
+  "license": "MIT",
+  "dependencies": {
+    "image-size": "^0.5.1",
+    "loader-utils": "^1.1.0"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "chai": "^3.5.0"
+  }
+}
