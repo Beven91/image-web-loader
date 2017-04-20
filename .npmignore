@@ -5,3 +5,4 @@ examples/
 .gitignore
 .babelrc
 test/
+assets/

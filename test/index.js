@@ -6,18 +6,19 @@ describe('index.js', function () {
 
   // --------------index.loader--------------------->
   it('loader', function () {
-    var source = '../assets/back-icon.png'
+    var source = 'module.exports =\'../assets/back-icon.png\'';
     var obj = {
       cacheable: function () {},
-      resourcePath: path.join(__dirname, source)
+      emitFile:function(){},
+      resourcePath: path.join(__dirname, '../assets/back-icon.png')
     }
     var module = loader.apply(obj, [source])
-    var fun = new Function('module,global', module)
+    var fun = new Function('module,global,__webpack_public_path__', module)
+     
     var getSource = function (p) {
       var obj = {devicePixelRatio: p}
       var module1 = {}
-      fun(module1, obj)
-    //   console.log(module1.exports);
+      fun(module1, obj,'')
       return module1.exports
     }
     assert.equal(true,getSource(1).uri=="../assets/back-icon.png")
@@ -27,5 +28,4 @@ describe('index.js', function () {
     assert.equal(true,getSource(4).uri=="../assets/back-icon@4x.png")
     assert.equal(true,getSource(null).uri=="../assets/back-icon.png")
   })
-  
 })
