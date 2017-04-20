@@ -25,7 +25,7 @@ RequireImageXAssetPlugin.prototype.apply = function (compiler) {
     params.normalModuleFactory.plugin('before-resolve', function (value, next) {
       var abspath = thisContext.getRequest(value.request, value.context)
       if (abspath) {
-        value.request = 'image!' + abspath
+        value.request = abspath
       }
       next(null, value)
     })
