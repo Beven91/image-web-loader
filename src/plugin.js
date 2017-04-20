@@ -12,7 +12,7 @@ var fs = require('fs')
  * @param imageAssets 图片资源存放目录
  */
 function RequireImageXAssetPlugin (imageAssets) {
-  this.imageAssets = imageAssets
+  this.imageAssets = imageAssets instanceof Array ? imageAssets : [imageAssets]
   this.extensions = ['', '.jpg', '.jpeg', '.png', '.gif', '.bmp']
 }
 
@@ -50,11 +50,26 @@ RequireImageXAssetPlugin.prototype.getRequest = function (request, context) {
  * @param context 引用模块的目录
  */
 RequireImageXAssetPlugin.prototype.find = function (name, context) {
-  var imageAssets = this.isPath(name) ? context : this.imageAssets
+  var imageAssets = this.isPath(name) ? [context] : this.imageAssets
+  for (var i = 0,k = imageAssets.length;i < k;i++) {
+    var abspath = this.findByContext(imageAssets[i], name, context)
+    if (abspath) {
+      return abspath
+    }
+  }
+}
+
+/**
+ * 根据contextDir去查找对应的图片资源文件路径
+ * @param contextDir 要查找的基础目录
+ * @param name 请求的资源名称 
+ * @param context 引用模块的目录
+ */
+RequireImageXAssetPlugin.prototype.findByContext = function (contextDir, name, context) {
   var extensions = this.extensions
   var abspath = null
   for (var i = 0,k = extensions.length;i < k;i++) {
-    abspath = path.join(imageAssets, name + extensions[i])
+    abspath = path.join(contextDir, name + extensions[i])
     if (fs.existsSync(abspath)) {
       return abspath
     }
