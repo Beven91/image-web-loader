@@ -25,11 +25,12 @@ module.exports = function (content) {
   var query = loaderUtils.getOptions(this) || {}
   var assets = query.assets || process.cwd()
   var resolution = new Resolution(absoluteFile, publicPath, this).getResolution()
+  var assetsPath = this.options.output.publicPath;
   return [
     'var resolution=' + JSON.stringify(resolution) + ';',
     'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
     'var rect = resolution[dpr] || resolution["@1x"];',
-    'module.exports ={"__packager_asset":true,"uri":__webpack_public_path__+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
+    'module.exports ={"__packager_asset":true,"uri":"'+assetsPath+'"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
   ].join(' ')
 }
 
