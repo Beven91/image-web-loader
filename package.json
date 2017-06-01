@@ -1,10 +1,10 @@
 {
   "name": "image-web-loader",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "react-native mode image loader for webpack",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -t 10000"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,16 @@
   "author": "beven",
   "license": "MIT",
   "dependencies": {
+    "dantejs": "^1.1.11",
     "image-size": "^0.5.1",
-    "loader-utils": "^1.1.0"
+    "imagemin": "^5.2.2",
+    "imagemin-gifsicle": "^5.1.0",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-optipng": "^5.2.1",
+    "imagemin-pngquant": "^5.0.0",
+    "imagemin-svgo": "^5.2.1",
+    "loader-utils": "^1.1.0",
+    "object-assign": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^0.14.0"

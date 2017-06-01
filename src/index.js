@@ -20,18 +20,21 @@ module.exports = function (content) {
     new Function('module,__webpack_public_path__', content)(md, '')
     content = md.exports
   }
+  var callback = this.async()
   var publicPath = content.replace(/;$/, '')
   var absoluteFile = this.resourcePath
   var query = loaderUtils.getOptions(this) || {}
   var assets = query.assets || process.cwd()
-  var resolution = new Resolution(absoluteFile, publicPath, this).getResolution()
-  var assetsPath = this.options.output.publicPath;
-  return [
-    'var resolution=' + JSON.stringify(resolution) + ';',
-    'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
-    'var rect = resolution[dpr] || resolution["@1x"];',
-    'module.exports ={"__packager_asset":true,"uri":"'+assetsPath+'"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
-  ].join(' ')
+  var assetsPath = this.options.output.publicPath
+
+  new Resolution(absoluteFile, publicPath, this).getResolution().then(function (resolution) {
+    callback(null, [
+      'var resolution=' + JSON.stringify(resolution) + ';',
+      'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
+      'var rect = resolution[dpr] || resolution["@1x"];',
+      'module.exports ={"__packager_asset":true,"uri":"' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
+    ].join(' '))
+  }).catch(callback)
 }
 
 module.exports.RequireImageXAssetPlugin = RequireImageXAssetPlugin
