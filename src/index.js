@@ -33,7 +33,8 @@ module.exports = function (content) {
       'var resolution=' + JSON.stringify(resolution) + ';',
       'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
       'var rect = resolution[dpr] || resolution["@1x"];',
-      'module.exports ={"__packager_asset":true,"uri":"'+cdnUriName+'+' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
+      'var baseUri = '+cdnUriName+';',
+      'module.exports ={"__packager_asset":true,"uri":baseUri+"' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
     ].join(' '))
   }).catch(callback)
 }
