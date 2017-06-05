@@ -31,7 +31,16 @@ Webpack config example:
         loaders: [
           {
             test: /\.(gif|jpeg|jpg|png|svg)$/,
-            loader: 'image-web-loader!file-loader'
+            loader: 'image-web-loader!file-loader',
+            query: {
+              progressive: true,
+              optimizationLevel: 7,
+              interlaced: false,
+              pngquant: {
+                quality: '65-90',
+                speed: 4
+              }
+            }
           }
         ]
       }
