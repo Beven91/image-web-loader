@@ -26,7 +26,7 @@ module.exports = function (content) {
   var query = loaderUtils.getOptions(this) || {}
   var assets = query.assets || process.cwd()
   var assetsPath = this.options.output.publicPath
-  var cdnUriName = query.contextName || '\'\'';
+  var cdnUriName = query.contextName || '""';
 
   new Resolution(absoluteFile, publicPath, this).getResolution().then(function (resolution) {
     callback(null, [
