@@ -11,9 +11,10 @@ var fs = require('fs')
  * 插件构造函数
  * @param imageAssets 图片资源存放目录
  */
-function RequireImageXAssetPlugin (imageAssets) {
+function RequireImageXAssetPlugin(imageAssets) {
   this.imageAssets = imageAssets instanceof Array ? imageAssets : [imageAssets]
   this.extensions = ['', '.jpg', '.jpeg', '.png', '.gif', '.bmp']
+  this.resolutions = ['','@1x', '@1.5x', '@2x', '@3x', '@4x'];
 }
 
 /**
@@ -39,8 +40,21 @@ RequireImageXAssetPlugin.prototype.apply = function (compiler) {
  */
 RequireImageXAssetPlugin.prototype.getRequest = function (request, context) {
   var element = (request || '').replace(/^-?!+/, '').replace(/!!+/g, '!').split('!')
+  var extName = (path.extname(request) || '').toLowerCase();
   if (element.length == 2 && element[0] == 'image') {
     return this.find(element[1], context)
+  } else if (extName && this.extensions.indexOf(extName) > -1) {
+    var before = path.join(context, request);
+    var info = path.parse(before);
+    var before = path.join(info.dir, info.name);
+    var resolutions = this.resolutions;
+    var file = null;
+    for (var i = 0, k = resolutions.length; i < k; i++) {
+      file = before + resolutions[i] + extName;
+      if (fs.existsSync(file)) {
+        return file;
+      }
+    }
   }
 }
 
@@ -51,7 +65,7 @@ RequireImageXAssetPlugin.prototype.getRequest = function (request, context) {
  */
 RequireImageXAssetPlugin.prototype.find = function (name, context) {
   var imageAssets = this.isPath(name) ? [context] : this.imageAssets
-  for (var i = 0,k = imageAssets.length;i < k;i++) {
+  for (var i = 0, k = imageAssets.length; i < k; i++) {
     var abspath = this.findByContext(imageAssets[i], name, context)
     if (abspath) {
       return abspath
@@ -68,7 +82,7 @@ RequireImageXAssetPlugin.prototype.find = function (name, context) {
 RequireImageXAssetPlugin.prototype.findByContext = function (contextDir, name, context) {
   var extensions = this.extensions
   var abspath = null
-  for (var i = 0,k = extensions.length;i < k;i++) {
+  for (var i = 0, k = extensions.length; i < k; i++) {
     abspath = path.join(contextDir, name + extensions[i])
     if (fs.existsSync(abspath)) {
       return abspath
@@ -83,9 +97,11 @@ RequireImageXAssetPlugin.prototype.findByContext = function (contextDir, name, c
 RequireImageXAssetPlugin.prototype.isPath = function (name) {
   if (path.isAbsolute(name) || name.split('/').length > 1) {
     return true
-  }else {
+  } else {
     return false
   }
 }
+
+
 
 module.exports = RequireImageXAssetPlugin
