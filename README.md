@@ -50,9 +50,9 @@ Webpack config example:
 Code example:
 
 ```js
-   require('./image/icon.png')  ---> {uri:'xxx/hello(@1x|@1.5x|@2x|@3x|@4x).png',width:xx,height:xx}
+   require('./image/icon.png')  //---> {uri:'xxx/hello(@1x|@1.5x|@2x|@3x|@4x).png',width:xx,height:xx}
 
-   require('image!hello) --->  {uri:'xxx/assets/images/hello.(png|gif|jpg|ico|bmp)',width:xx,height:xx}
+   require('image!hello)  //--->  {uri:'xxx/assets/images/hello.(png|gif|jpg|ico|bmp)',width:xx,height:xx}
 ```
 
 ### 四、开源许可
