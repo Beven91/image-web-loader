@@ -55,7 +55,7 @@ Code example:
   require('./image/icon.png')  
 
   // --->  {uri:'xxx/assets/images/hello.(png|gif|jpg|ico|bmp)',width:xx,height:xx}
-  require('image!hello)  
+  require('image!hello')  
 ```
 
 ### 四、开源许可
