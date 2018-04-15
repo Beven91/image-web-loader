@@ -10,6 +10,9 @@ describe('index.js', function () {
     var source = "module.exports ='../assets/back-icon.png'"
     var obj = {
       cacheable: function () {},
+      emitWarning:function(){
+
+      },
       emitFile: function (file,data) {
         fs.writeFileSync(file,data)
       },
