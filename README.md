@@ -34,7 +34,9 @@ module.exports = {
         test: /\.(gif|jpeg|jpg|png|svg)$/,
         loader: 'image-web-loader!file-loader',
         query: {
-          progressive: true,
+          //true: require('a.jpg') 返回url 否则返回{width:xx,height:xx,uri:xxx}
+          onlyWeb:false,
+          progressive: true,
           optimizationLevel: 7,
           interlaced: false,
           pngquant: {

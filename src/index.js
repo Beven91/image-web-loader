@@ -27,14 +27,18 @@ module.exports = function (content) {
   var assets = query.assets || process.cwd()
   var assetsPath = this.options.output.publicPath
   var cdnUriName = query.contextName || '""';
+  var onlyWeb = query.onlyWeb;
+
+  var exportCode = 'module.exports ={"__packager_asset":true,"uri":baseUri+"' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}';
+  var onlyWebCode = 'module.exports =baseUri+"' + assetsPath + '"+rect.src;';
 
   new Resolution(absoluteFile, publicPath, this).getResolution().then(function (resolution) {
     callback(null, [
       'var resolution=' + JSON.stringify(resolution) + ';',
       'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
       'var rect = resolution[dpr] || resolution["@1x"];',
-      'var baseUri = '+cdnUriName+';',
-      'module.exports ={"__packager_asset":true,"uri":baseUri+"' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}'
+      'var baseUri = ' + cdnUriName + ';',
+      onlyWeb ? onlyWebCode : exportCode
     ].join(' '))
   }).catch(callback)
 }
