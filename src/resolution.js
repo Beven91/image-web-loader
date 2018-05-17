@@ -22,7 +22,7 @@ var assign = require('object-assign');
  * @param publicPath  图片引用的url路径
  * @param plugin  webpack loader执行上下文对象
  */
-function Resolution (abspath, publicPath, plugin) {
+function Resolution(abspath, publicPath, plugin) {
   this.abspath = abspath
   this.publicPath = publicPath
   this.ext = path.extname(abspath)
@@ -50,40 +50,62 @@ Resolution.prototype.getResolution = function () {
 }
 
 /**
+ * 同步获取
+ */
+Resolution.prototype.getResolutionSync = function () {
+  this.resolutionOf('', '@1x');
+  this.resolutionOf('@1.5x');
+  this.resolutionOf('@2x');
+  this.resolutionOf('@3x');
+  this.resolutionOf('@4x');
+  return this.data;
+}
+
+/**
  * 根据传入的设备像素比来生成对应的图片信息
  */
 Resolution.prototype.resolutionBy = function (resolution, alias) {
   var thisContext = this
   return new dantejs.Promise(function (resolve, reject) {
-    var ext = thisContext.ext
-    var name = thisContext.name
-    var abspath = name + resolution + ext
-    if (fs.existsSync(abspath)) {
-      var image = fromImageFile(abspath)
-      var x = fs.readFileSync(abspath)
-      var xName = thisContext.publicPath.replace(ext, resolution + ext)
+    var info = thisContext.resolutionOf(resolution, alias);
+    if (info) {
+      var x = fs.readFileSync(info.abspath)
       thisContext.imageMin(x, function (err, data) {
         if (err) {
           thisContext.plugin.emitWarning(err)
-        }else {
-          thisContext.plugin.emitFile(xName, data)
+        } else {
+          thisContext.plugin.emitFile(info.xName, data)
         }
         resolve()
       })
-      thisContext.data[(resolution || alias)] = {
-        width: image.width,
-        height: image.height,
-        src: xName
-      }
-    }else {
+    } else {
       resolve()
     }
   })
 }
 
+Resolution.prototype.resolutionOf = function (resolution, alias) {
+  var ext = this.ext
+  var name = this.name
+  var abspath = name + resolution + ext
+  if (fs.existsSync(abspath)) {
+    var image = fromImageFile(abspath)
+    var xName = this.publicPath.replace(ext, resolution + ext)
+    this.data[(resolution || alias)] = {
+      width: image.width,
+      height: image.height,
+      src: xName
+    }
+    return {
+      abspath: abspath,
+      xName: xName
+    };
+  }
+}
+
 Resolution.prototype.imageMin = function (x, callback) {
   imagemin
-    .buffer(x, { plugins: this.imageMinPlugins})
+    .buffer(x, { plugins: this.imageMinPlugins })
     .then(function (data) {
       callback(null, data)
     })

@@ -15,33 +15,52 @@ module.exports = function (content) {
   if (this.cacheable) {
     this.cacheable()
   }
+  content = handleContent(content);
+  var context = this;
+  var callback = this.async()
+  var publicPath = content.replace(/;$/, '')
+  var absoluteFile = this.resourcePath;
+  new Resolution(absoluteFile, publicPath, this).getResolution().then(function (resolution) {
+    callback(null, createModule(context, resolution,publicPath));
+  }).catch(callback)
+}
+
+module.exports.sync = function (content) {
+  if (this.cacheable) {
+    this.cacheable()
+  }
+  content = handleContent(content);
+  var publicPath = content.replace(/;$/, '')
+  var absoluteFile = this.resourcePath;
+  var resolution = new Resolution(absoluteFile, publicPath, this).getResolutionSync();
+  return createModule(this, resolution,publicPath);
+}
+
+function handleContent(content) {
   if (content.indexOf('module.exports') > -1) {
     var md = {}
     new Function('module,__webpack_public_path__', content)(md, '')
     content = md.exports
   }
-  var callback = this.async()
-  var publicPath = content.replace(/;$/, '')
-  var absoluteFile = this.resourcePath;
-  var compiler = this._compiler;
-  var query = loaderUtils.getOptions(this) || {}
+  return content;
+}
+
+function createModule(context, resolution,publicPath) {
+  var compiler = context._compiler;
+  var query = loaderUtils.getOptions(context) || {}
   var assets = query.assets || process.cwd()
-  var assetsPath = (this.options || compiler.options).output.publicPath
+  var assetsPath = (context.options || compiler.options).output.publicPath
   var cdnUriName = query.contextName || '""';
   var onlyWeb = query.onlyWeb;
-
   var exportCode = 'module.exports ={"__packager_asset":true,"uri":baseUri+"' + assetsPath + '"+rect.src,"width":rect.width,"height":rect.height,"deprecated":true}';
   var onlyWebCode = 'module.exports =baseUri+"' + assetsPath + '"+rect.src;';
-
-  new Resolution(absoluteFile, publicPath, this).getResolution().then(function (resolution) {
-    callback(null, [
-      'var resolution=' + JSON.stringify(resolution) + ';',
-      'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
-      'var rect = resolution[dpr] || resolution["@1x"];',
-      'var baseUri = ' + cdnUriName + ';',
-      onlyWeb ? onlyWebCode : exportCode
-    ].join(' '))
-  }).catch(callback)
+  return [
+    'var resolution=' + JSON.stringify(resolution) + ';',
+    'var dpr = "@"+(global.devicePixelRatio || 1)+"x";',
+    'var rect = resolution[dpr] || resolution["@1x"];',
+    'var baseUri = ' + cdnUriName + ';',
+    onlyWeb ? onlyWebCode : exportCode
+  ].join(' ')
 }
 
 module.exports.RequireImageXAssetPlugin = RequireImageXAssetPlugin
