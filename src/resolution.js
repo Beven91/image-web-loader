@@ -7,7 +7,7 @@ var path = require('path')
 var fs = require('fs')
 var dantejs = require('dantejs')
 var imagemin = require('imagemin')
-var imageminGifsicle = require('imagemin-gifsicle')
+// var imageminGifsicle = require('imagemin-gifsicle')
 var imageminMozjpeg = require('imagemin-mozjpeg')
 var imageminOptipng = require('imagemin-optipng')
 var imageminSvgo = require('imagemin-svgo')
@@ -114,7 +114,7 @@ Resolution.prototype.readyImageMinPlugins = function (thisContext) {
   }
   var plugins = this.imageMinPlugins = []
   if (options.gifsicle.enabled !== false)
-    plugins.push(imageminGifsicle(options.gifsicle))
+    //plugins.push(imageminGifsicle(options.gifsicle))
   if (options.mozjpeg.enabled !== false)
     plugins.push(imageminMozjpeg(options.mozjpeg))
   if (options.svgo.enabled !== false)
