@@ -22,10 +22,11 @@ module.exports = function (content) {
   }
   var callback = this.async()
   var publicPath = content.replace(/;$/, '')
-  var absoluteFile = this.resourcePath
+  var absoluteFile = this.resourcePath;
+  var compiler = this._compiler;
   var query = loaderUtils.getOptions(this) || {}
   var assets = query.assets || process.cwd()
-  var assetsPath = this.options.output.publicPath
+  var assetsPath = (this.options || compiler.options).output.publicPath
   var cdnUriName = query.contextName || '""';
   var onlyWeb = query.onlyWeb;
 
